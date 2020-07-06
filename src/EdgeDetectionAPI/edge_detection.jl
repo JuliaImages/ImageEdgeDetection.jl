@@ -21,11 +21,11 @@ following pattern:
 f = Canny()
 
 # then pass the algorithm to `detect_edges`
-img_edges = detect_edges(img, f)
+img_edges, list_edges = detect_edges(img, f)
 
-# or use in-place version `thin_edges!`
+# or use in-place version `detect_edges!`
 img_edges = similar(img)
-detect_edges!(img_edges, img, f)
+list_edges = detect_edges!(img_edges, img, f)
 ```
 
 
