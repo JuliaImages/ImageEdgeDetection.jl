@@ -67,9 +67,9 @@ thin_edges!(out::AbstractArray, mag::AbstractArray, g₁::AbstractArray, g₂::A
 """
     thin_edges!([out,] mag, g₁, g₂, f::AbstractEdgeThinningAlgorithm, args...; kwargs...)
 
-    Isolate local maxima of gradient magnitude `mag` along the local gradient
-    direction. The arguments `g₁` and `g₂` represent the  gradient in the first
-    spatial dimension (y), and the second spatial dimension (x), respectively.
+Isolate local maxima of gradient magnitude `mag` along the local gradient
+direction. The arguments `g₁` and `g₂` represent the  gradient in the first
+spatial dimension (y), and the second spatial dimension (x), respectively.
 
 # Output
 

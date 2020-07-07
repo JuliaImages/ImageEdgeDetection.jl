@@ -20,7 +20,8 @@ Various options for the parameters of the `detect_edges` function and `Canny` ty
 # Choices for img
 
 The `detect_edges` function can handle a variety of input types.
-By default the type of the returned image is `Gray{Bool}`.
+By default the type of the returned image matches the type of the
+input image. 
 
 For colored images, the input is converted grayscale.
 

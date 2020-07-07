@@ -9,6 +9,7 @@ makedocs(;
     format = format,
     pages=[
         "Home" => "index.md",
+        "Function Reference" => "reference.md"
     ],
     sitename="ImageEdgeDetection.jl",
     authors="Dr. Zygmunt L. Szpak"

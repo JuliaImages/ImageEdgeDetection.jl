@@ -20,7 +20,7 @@ TODO
 
 ```julia
 
-using TestImages, FileIO, ImageView
+using TestImages, FileIO, ImageView, ImageEdgeDetection, ImageFiltering
 
 img =  testimage("mandril_gray")
 
@@ -45,17 +45,19 @@ imshow(nms)
 # References
 J. Canny, "A Computational Approach to Edge Detection," in IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. PAMI-8, no. 6, pp. 679-698, Nov. 1986, doi: 10.1109/TPAMI.1986.4767851.
 """
-@with_kw struct NonmaximaSuppression{ T <: Union{Real,AbstractGray}} <: AbstractEdgeThinningAlgorithm
-    threshold::T = 0.009765625
+@with_kw struct NonmaximaSuppression{ T <: Union{Real,AbstractGray, Percentile}} <: AbstractEdgeThinningAlgorithm
+    threshold::T = Percentile(20)
 end
 
 
 function (f::NonmaximaSuppression)(out::AbstractArray, mag::AbstractArray, g₁::AbstractArray, g₂::AbstractArray)
     @unpack threshold = f
 
+    low_threshold =  typeof(threshold) <: Percentile ? StatsBase.percentile(vec(mag), threshold.p) : threshold
+
     # Isolate local maxima of gradient magnitude by “non-maximum suppression”
     # along the local gradient direction.
-    suppress_non_maxima!(out, mag, g₁, g₂, threshold)
+    suppress_non_maxima!(out, mag, g₁, g₂, low_threshold)
 
     return out
 end
@@ -78,7 +80,7 @@ function suppress_non_maxima!(out::AbstractArray, mag::AbstractArray, g₁::Abst
         d₁ = g₁[i]
         d₂ = g₂[i]
         mc = mag[i]
-        if mc < threshold
+        if mc < threshold || mc == 0
             out[r,c] = zero(eltype(mag))
         else
             # Ensure the vector 𝐝 = [d₁, d₂] has unit norm.
