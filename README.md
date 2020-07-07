@@ -18,7 +18,7 @@ Currently under construction.
 [codecov-img]: https://codecov.io/github/JuliaImages/ImageEdgeDetection.jl/coverage.svg?branch=master
 [codecov-url]: https://codecov.io/github/JuliaImages/ImageEdgeDetection.jl?branch=master
 [docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: https://JuliaImages.github.io/ImageEdgeDetection.jl/stable
+[docs-stable-url]: https://juliaimages.org/ImageEdgeDetection.jl/stable
 [docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
-[docs-dev-url]: https://JuliaImages.github.io/ImageEdgeDetection.jl/latest
+[docs-dev-url]: https://juliaimages.org/ImageEdgeDetection.jl/dev
 
