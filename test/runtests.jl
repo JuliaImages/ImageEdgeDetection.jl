@@ -2,7 +2,6 @@ using ImageEdgeDetection
 using Test, TestImages
 using ImageDraw
 using FileIO
-using ImageIO
 using ImageFiltering
 using ImageCore
 using ReferenceTests
