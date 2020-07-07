@@ -1,15 +1,18 @@
 using Documenter, ImageEdgeDetection
 
+format = Documenter.HTML(edit_link = "master",
+                         prettyurls = get(ENV, "CI", nothing) == "true",
+                         assets = String[])
+
 makedocs(;
     modules=[ImageEdgeDetection],
-    format=Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true")),
+    format = format,
     pages=[
         "Home" => "index.md",
+        "Function Reference" => "reference.md"
     ],
-    repo="https://github.com/JuliaImages/ImageEdgeDetection.jl/blob/{commit}{path}#L{line}",
     sitename="ImageEdgeDetection.jl",
-    authors="Dr. Zygmunt L. Szpak",
-    assets=String[],
+    authors="Dr. Zygmunt L. Szpak"
 )
 
 deploydocs(;
