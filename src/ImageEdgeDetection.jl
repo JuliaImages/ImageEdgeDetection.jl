@@ -41,7 +41,7 @@ export
     NonmaximaSuppression,
     Percentile,
     thin_edges,
-    thing_edges!,
+    thin_edges!,
     detect_edges,
     detect_edges!
 
