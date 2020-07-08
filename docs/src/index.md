@@ -53,6 +53,10 @@ image.
 
 Let's see a simple demo using the famous Canny edge detection algorithm:
 
+```@setup Canny
+mkpath("images")
+```
+
 ```@example Canny
 using TestImages, ImageEdgeDetection, MosaicViews
 using FileIO # hide
