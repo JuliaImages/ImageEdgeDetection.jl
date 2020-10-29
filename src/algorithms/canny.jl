@@ -1,10 +1,12 @@
 """
 ```
     Canny <: AbstractEdgeDetectionAlgorithm
-    Canny(; spatial_scale = 1, high = Percentile(80), low = Percentile(20))
+    Canny(; spatial_scale = 1, high = Percentile(80), low = Percentile(20), thinning_algorithm = NonmaximaSuppression(threshold = low))
 
     detect_edges([T,] img, f::Canny)
     detect_edges!([out,] img, f::Canny)
+    detect_subpixel_edges([T₁, T₂] img, f::Canny)
+    detect_subpixel_edges!(out₁, out₂, img, f::Canny)
 ```
 
 Returns a binary image depicting the edges of the input image.
@@ -21,9 +23,9 @@ Various options for the parameters of the `detect_edges` function and `Canny` ty
 
 The `detect_edges` function can handle a variety of input types.
 By default the type of the returned image matches the type of the
-input image. 
+input image.
 
-For colored images, the input is converted grayscale.
+For colored images, the input is converted to grayscale.
 
 # Choices for `spatial_scale` in `Canny`.
 
@@ -35,6 +37,12 @@ be a positive real number.
 The hysteresis thresholds `high` and `low` (`high` > `low`) can be specified as
 positive numbers, or as `Percentiles`. If left unspecified, a default value of
 `high = Percentile(80)` and `low = Percentile(20)` is assumed.
+
+# Choices for `thinning_algorithm` in `Canny`.
+You can specify an [`AbstractEdgeThinningAlgorithm`](@ref). By default, the
+[`NonmaximaSuppression`](@ref) algorithm is used which suppresses non-maxima up
+to pixel-level accuracy. For subpixel precision specify the
+[`SubpixelNonmaximaSuppression`](@ref) algorithm.
 
 # Example
 
@@ -63,7 +71,7 @@ J. Canny, "A Computational Approach to Edge Detection," in IEEE Transactions on 
     thinning_algorithm::T₄ = NonmaximaSuppression(threshold = low)
 end
 
-
+# Handles pixel-level precision.
 function (f::Canny)(out::GenericGrayImage, img::GenericGrayImage)
     @unpack spatial_scale, high, low = f
     @unpack thinning_algorithm = f
@@ -106,6 +114,52 @@ function (f::Canny)(out::GenericGrayImage, img::GenericGrayImage)
     out .= edges
 end
 
+# Handles subpixel precision.
+function (f::Canny)(out₁::GenericGrayImage, out₂::AbstractArray{<:StaticVector}, img::GenericGrayImage)
+    @unpack spatial_scale, high, low = f
+    @unpack thinning_algorithm = f
+    σ = spatial_scale
+
+    # Smooth the image with a Gaussian filter of width σ, which specifies the
+    # scale level of the edge detector.
+    kernel = KernelFactors.IIRGaussian((σ,σ))
+    imgf = imfilter(img, kernel, NA())
+
+    # Calculate the gradient vector at each position of the filtered image.
+    # The derivatives are taken with respect to the first and second dimension
+    # (rows first, then columns).
+    g₁, g₂ = imgradients(imgf, KernelFactors.scharr)
+    # Gradient magnitude
+    mag = hypot.(g₁, g₂)
+
+    low_threshold =  typeof(low) <: Percentile ? StatsBase.percentile(vec(mag), low.p) : low
+    high_threshold =  typeof(high) <: Percentile ? StatsBase.percentile(vec(mag), high.p) : high
+
+    thinning_algorithm = @set thinning_algorithm.threshold = low_threshold
+
+    # Isolate local maxima of gradient magnitude by “non-maximum suppression”
+    # along the local gradient direction.
+    nms, subpixel_offsets = thin_subpixel_edges(mag, g₁, g₂, thinning_algorithm)
+
+    # Collect sets of connected edge pixels from the local maxima by applying
+    # “hysteresis thresholding”. Edge pixels whose gradient magnitude is below
+    # the low threshold are removed; edge pixels whose gradient magnitudes are
+    # above (or equal to) the high threshold are retained, and edge pixels whose
+    # gradient magnituded are between the low and high threshold are only
+    # retained if they are connected to edge pixels whose gradient magnitudes
+    # are above or equal to the high threshold.
+    edges = zeros(Bool, axes(img))
+    @inbounds for i in CartesianIndices(nms)
+        if nms[i] >= high_threshold && edges[i] == 0
+            trace_and_threshold!(edges, nms, i, low_threshold)
+        end
+    end
+    out₁ .= edges
+    out₂ .= subpixel_offsets
+
+    return out₁, out₂
+end
+
 function (f::Canny)(out::AbstractArray{<:Color3}, img::AbstractArray{<:Color3})
     T = eltype(img)
     out_temp = zeros(Gray{eltype(T)}, axes(out))
@@ -115,9 +169,25 @@ function (f::Canny)(out::AbstractArray{<:Color3}, img::AbstractArray{<:Color3})
     out .= convert.(T, f(out_temp, Gray.(img)))
 end
 
+function (f::Canny)(out₁::AbstractArray{<:Color3}, out₂::AbstractArray{<:StaticVector}, img::AbstractArray{<:Color3})
+    T = eltype(img)
+    out_temp = zeros(Gray{eltype(T)}, axes(out₁))
+    # NB This will be refactored in future version once a proper color-based
+    # edge detection algorithm is implemented. At the moment we just call the
+    # default "grayscale" edge detection algorithm.
+    out_temp, offsets = f(out_temp, out₂, Gray.(img))
+
+    out₁ .= convert.(T, out_temp)
+    return out₁, offsets
+end
+
 
 (f::Canny)(out::GenericGrayImage, img::AbstractArray{<:Color3}) =
     f(out, of_eltype(Gray, img))
+
+(f::Canny)(out₁::GenericGrayImage, out₂::AbstractArray{<:StaticVector}, img::AbstractArray{<:Color3}) =
+    f(out₁, out₂, of_eltype(Gray, img))
+
 
 """
 ```

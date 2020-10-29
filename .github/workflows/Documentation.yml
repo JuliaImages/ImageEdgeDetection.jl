@@ -9,8 +9,6 @@ on:
     tags: '*'
   release:
     types: [published]
-  release:
-    types: [published]
 
 jobs:
   build:
