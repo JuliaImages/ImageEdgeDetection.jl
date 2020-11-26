@@ -36,6 +36,11 @@ ImageEdgeDetection.EdgeDetectionAPI.AbstractEdgeThinningAlgorithm
 ImageEdgeDetection.NonmaximaSuppression
 ```
 
+### Non-maxima Suppression (Subpixel)
+```@docs
+ImageEdgeDetection.NonmaximaSubpixelSuppression
+```
+
 ## Supplementary Types
 ```@docs
 ImageEdgeDetection.Percentile

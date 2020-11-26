@@ -3,6 +3,7 @@
 module EdgeDetectionAPI
 
 using ImageCore # ColorTypes is sufficient
+using StaticArrays
 
 # TODO Relax this to all image color types
 const GenericGrayImage = AbstractArray{<:Union{Number, AbstractGray}}
