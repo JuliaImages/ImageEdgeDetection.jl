@@ -18,9 +18,9 @@ import .EdgeDetectionAPI: AbstractEdgeDetectionAlgorithm,
                           detect_edges, detect_edges!,
                           detect_subpixel_edges, detect_subpixel_edges!
 
- import .EdgeDetectionAPI: AbstractEdgeThinningAlgorithm,
-                           thin_edges, thin_edges!,
-                           thin_subpixel_edges, thin_subpixel_edges!
+import .EdgeDetectionAPI: AbstractEdgeThinningAlgorithm,
+                          thin_edges, thin_edges!,
+                          thin_subpixel_edges, thin_subpixel_edges!
 
 # TODO Relax this to all image color types
 const GenericGrayImage = AbstractArray{<:Union{Number, AbstractGray}}
@@ -39,6 +39,7 @@ end
 include("algorithms/nonmaxima_suppression.jl")
 include("algorithms/subpixel_nonmaxima_suppression.jl")
 include("algorithms/canny.jl")
+include("algorithms/gradient_orientation.jl")
 
 # Set the Canny algorithm as the default edge detection algorithm.
 detect_edges(img::AbstractArray,
@@ -53,6 +54,7 @@ export
     Canny,
     NonmaximaSuppression,
     SubpixelNonmaximaSuppression,
+    OrientationConvention,
     Percentile,
     thin_edges,
     thin_edges!,
@@ -61,6 +63,8 @@ export
     detect_edges,
     detect_edges!,
     detect_subpixel_edges,
-    detect_subpixel_edges!
+    detect_subpixel_edges!,
+    detect_gradient_orientation,
+    detect_gradient_orientation!
 
 end # module

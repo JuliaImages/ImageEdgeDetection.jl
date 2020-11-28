@@ -60,6 +60,7 @@ mkpath("images")
 ```@example Canny
 using TestImages, ImageEdgeDetection, MosaicViews
 using FileIO # hide
+using ImageCore # hide
 img =  testimage("mandril_gray")
 # Detect edges at different scales by adjusting the `spatial_scale` parameter.
 img_edges₁ = detect_edges(img, Canny(spatial_scale = 1.4))
@@ -117,5 +118,52 @@ save("images/demo3.jpg", demo₃); # hide
 <img src="images/demo3.jpg" width="512px" alt="edge thinning demo image" />
 <p>
 ```
+
+One can also determine the gradient orientation in an adjustable manner by
+defining an [`OrientationConvention`](@ref
+ImageEdgeDetection.OrientationConvention). An `OrientationConvention` allows you
+to specify the compass direction against  which you intend to measure the angle,
+and whether you are measuring in a clockwise or counter-clockwise manner.
+
+In the example below, we map the angles `[0...360]` to the unit interval to
+visualise the orientation of the circle edge test image using different
+orientation conventions. Note that the angle `360` is used as a sentinel value
+to demarcate pixels for which the gradient orientation is undefined. The
+gradient orientation is undefined when the gradient magnitude is effectively
+zero. This corresponds to regions of constant intensity in the image. In the
+images that depict the gradient orientation, the undefined orientations are
+represent as pure white pixels.
+
+```@example GradientOrientation
+
+# Create a test image (black circle against a white background).
+a = 250
+b = 250
+r = 150
+img = Gray.(ones(500, 500))
+for i in CartesianIndices(img)
+   y, x = i.I
+   img[i] = (x-a)^2 + (y - b)^2 - r^2 < 0 ? 0.0 : 1.0
+end
+
+# Determine the image gradients
+g₁, g₂ = imgradients(img, KernelFactors.sobel)
+
+orientation_convention₁ = OrientationConvention(in_radians = false, compass_direction = 'S')
+orientation_convention₂ = OrientationConvention(in_radians = false, compass_direction = 'N')
+orientation_convention₂ = OrientationConvention(in_radians = false, compass_direction = 'E', is_clockwise = true)
+
+angles₁ = detect_gradient_orientation(g₁, g₂, orientation_convention₁) / 360
+angles₂ = detect_gradient_orientation(g₁, g₂, orientation_convention₂) / 360
+angles₃ = detect_gradient_orientation(g₁, g₂, orientation_convention₃) / 360
+
+demo₃ = mosaicview(img, Gray.(angles₁), Gray.(angles₂), Gray.(angles₃); nrow = 2)
+save("images/demo4.jpg", demo₄); # hide
+```
+```@raw html
+<img src="images/demo4.jpg" width="512px" alt="gradient orientation demo image" />
+<p>
+```
+
 
 For more advanced usage, please check [function reference](@ref function_reference) page.
