@@ -148,6 +148,13 @@
         end
     end
 
+    @testset "Default Values" begin
+        img = Gray{N0f8}.(load("algorithms/References/circle.png"))
+        out, offsets = detect_subpixel_edges(img)
+        @test_reference "References/circle_edge.png" Gray.(detect_edges(img)) by=edge_detection_equality()
+        @test_reference "References/circle_edge.png" Gray.(out) by=edge_detection_equality()
+    end
+
     @testset "Numerical" begin
         # Check that the image only has ones or zeros.
         img = Gray{N0f8}.(load("algorithms/References/circle.png"))
