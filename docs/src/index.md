@@ -135,6 +135,8 @@ images that depict the gradient orientation, the undefined orientations are
 represent as pure white pixels.
 
 ```@example GradientOrientation
+using ImageEdgeDetection, MosaicViews, ImageFiltering, ImageCore
+using FileIO # hide
 
 # Create a test image (black circle against a white background).
 a = 250
@@ -151,13 +153,13 @@ g₁, g₂ = imgradients(img, KernelFactors.sobel)
 
 orientation_convention₁ = OrientationConvention(in_radians = false, compass_direction = 'S')
 orientation_convention₂ = OrientationConvention(in_radians = false, compass_direction = 'N')
-orientation_convention₂ = OrientationConvention(in_radians = false, compass_direction = 'E', is_clockwise = true)
+orientation_convention₃ = OrientationConvention(in_radians = false, compass_direction = 'E', is_clockwise = true)
 
 angles₁ = detect_gradient_orientation(g₁, g₂, orientation_convention₁) / 360
 angles₂ = detect_gradient_orientation(g₁, g₂, orientation_convention₂) / 360
 angles₃ = detect_gradient_orientation(g₁, g₂, orientation_convention₃) / 360
 
-demo₃ = mosaicview(img, Gray.(angles₁), Gray.(angles₂), Gray.(angles₃); nrow = 2)
+demo₄ = mosaicview(img, Gray.(angles₁), Gray.(angles₂), Gray.(angles₃); nrow = 2)
 save("images/demo4.jpg", demo₄); # hide
 ```
 ```@raw html
