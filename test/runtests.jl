@@ -20,6 +20,7 @@ include("testutils.jl")
     include("algorithms/thin_subpixel_edges.jl")
     include("algorithms/nonmaxima_suppression.jl")
     include("algorithms/subpixel_nonmaxima_suppression.jl")
+    include("algorithms/gradient_orientation.jl")
 end
 
 nothing

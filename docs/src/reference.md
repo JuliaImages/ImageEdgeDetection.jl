@@ -10,12 +10,17 @@ Depth = 3
 ```@docs
 detect_edges
 detect_edges!
+detect_subpixel_edges
+detect_subpixel_edges!
+detect_gradient_orientation
+detect_gradient_orientation!
 thin_edges
 thin_edges!
+thin_subpixel_edges
+thin_subpixel_edges!
 ```
 
 ## Edge Detection Algorithms
-
 ```@docs
 ImageEdgeDetection.EdgeDetectionAPI.AbstractEdgeDetectionAlgorithm
 ```
@@ -26,7 +31,6 @@ ImageEdgeDetection.Canny
 ```
 
 ## Edge Thinning Algorithms
-
 ```@docs
 ImageEdgeDetection.EdgeDetectionAPI.AbstractEdgeThinningAlgorithm
 ```
@@ -38,7 +42,12 @@ ImageEdgeDetection.NonmaximaSuppression
 
 ### Non-maxima Suppression (Subpixel)
 ```@docs
-ImageEdgeDetection.NonmaximaSubpixelSuppression
+ImageEdgeDetection.SubpixelNonmaximaSuppression
+```
+
+### OrientationConvention
+```@docs
+ImageEdgeDetection.OrientationConvention
 ```
 
 ## Supplementary Types

@@ -54,7 +54,7 @@ imshow(nms)
 1. J. Canny, "A Computational Approach to Edge Detection," in IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. PAMI-8, no. 6, pp. 679-698, Nov. 1986, doi: 10.1109/TPAMI.1986.4767851.
 2. F. Devernay, "A non-maxima suppression method for edge detection with sub-pixel accuracy", Tech. Report RR-2724, INRIA, 1995.
 """
-@with_kw struct SubpixelNonmaximaSuppression{ T <: Union{Real,AbstractGray, Percentile}} <: AbstractEdgeThinningAlgorithm
+@with_kw struct SubpixelNonmaximaSuppression{T <: Union{Real,AbstractGray, Percentile}} <: AbstractEdgeThinningAlgorithm
     threshold::T = Percentile(20)
 end
 
