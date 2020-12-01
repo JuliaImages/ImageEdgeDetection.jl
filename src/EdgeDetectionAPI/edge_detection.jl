@@ -230,7 +230,7 @@ detect_subpixel_edges(img::AbstractArray{T},
     detect_edges!([out,] img, f::AbstractEdgeDetectionAlgorithm, args...; kwargs...)
 
 Detect edges of `img` using algorithm `f`;  if left unspecified, `f` is assumed
-to be [`Canny`](@ref).
+to be [`Canny`](@ref ImageEdgeDetection.Canny).
 
 # Output
 
@@ -260,7 +260,7 @@ detect_edges!
     out = detect_edges([T::Type,] img, f::AbstractEdgeDetectionAlgorithm, args...; kwargs...)
 
 Detect edges of `img` using algorithm `f`;  if left unspecified, `f` is assumed
-to be [`Canny`](@ref).
+to be [`Canny`](@ref ImageEdgeDetection.Canny).
 
 # Output
 
@@ -294,7 +294,7 @@ detect_edges
     detect_subpixel_edges!(out₁, out₂, img, f::AbstractEdgeDetectionAlgorithm, args...; kwargs...)
 
 Detect edges of `img` to subpixel precision using algorithm `f`;  if left
-unspecified, `f` is assumed to be [`Canny`](@ref).
+unspecified, `f` is assumed to be [`Canny`](@ref ImageEdgeDetection.Canny).
 
 # Output
 
@@ -322,7 +322,7 @@ detect_subpixel_edges!
     out₁, out₂ = detect_subpixel_edges([T₁::Type, T₂::Type], img, f::AbstractEdgeDetectionAlgorithm, args...; kwargs...)
 
 Detect edges of `img` to subpixel precision using algorithm `f`;  if left
-unspecified, `f` is assumed to be [`Canny`](@ref).
+unspecified, `f` is assumed to be [`Canny`](@ref ImageEdgeDetection.Canny).
 
 # Output
 
