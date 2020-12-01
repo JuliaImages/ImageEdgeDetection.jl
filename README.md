@@ -1,6 +1,6 @@
 # ImageEdgeDetection
 
-Currently under construction.
+A Julia package for determining image edges (up to subpixel precision) and ascertaining the gradient/edge orientations. 
 
 [![][action-img]][action-url]
 [![][pkgeval-img]][pkgeval-url]
