@@ -126,13 +126,14 @@ to specify the compass direction against  which you intend to measure the angle,
 and whether you are measuring in a clockwise or counter-clockwise manner.
 
 In the example below, we map the angles `[0...360]` to the unit interval to
-visualise the orientation of the circle edge test image using different
-orientation conventions. Note that the angle `360` is used as a sentinel value
-to demarcate pixels for which the gradient orientation is undefined. The
-gradient orientation is undefined when the gradient magnitude is effectively
-zero. This corresponds to regions of constant intensity in the image. In the
-images that depict the gradient orientation, the undefined orientations are
-represent as pure white pixels.
+visualise the orientation of the image gradient using different orientation
+conventions. Note that the angle `360` is used as a sentinel value to demarcate
+pixels for which the gradient orientation is undefined. The gradient orientation
+is undefined when the gradient magnitude is effectively zero. This corresponds
+to regions of constant intensity in the image. In the In the panel of images,
+the first image constitutes a black circle against a white background. The
+subsequent images depict the image gradient orientation, where the undefined
+gradient orientations are represent as pure white pixels.
 
 ```@example GradientOrientation
 using ImageEdgeDetection, MosaicViews, ImageFiltering, ImageCore

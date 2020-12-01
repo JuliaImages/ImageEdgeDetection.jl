@@ -170,11 +170,11 @@ function detect_gradient_orientation!(out::AbstractArray, g₁::AbstractArray, g
         end
     elseif is_clockwise && !in_radians
         @inbounds for i in CartesianIndices(g₁)
-            out[i] = rad2deg(zero_to_2PI(clockwise(valid_angle(g₁[i], g₂[i], offset, tol))))
+            out[i] = rad2deg(zero_to_2PI(clockwise_valid_angle(g₁[i], g₂[i], offset, tol)))
         end
     elseif is_clockwise && in_radians
         @inbounds for i in CartesianIndices(g₁)
-            out[i] = zero_to_2PI(clockwise(valid_angle(g₁[i], g₂[i], offset, tol)))
+            out[i] = zero_to_2PI(clockwise_valid_angle(g₁[i], g₂[i], offset, tol))
         end
     end
     return nothing
@@ -193,6 +193,16 @@ function valid_angle(g₁, g₂, offset, tol)
     # against which compass direction we will measure angles.
     is_angle_undefined = (abs(g₁) < tol && abs(g₂) < tol)
     return  is_angle_undefined ? 2π : atan(-g₁, g₂) + offset
+end
+
+# When the angle is undefined because g₁ and g₂ are almost zero, we return
+# a "dummy" value of 2π.
+function clockwise_valid_angle(g₁, g₂, offset, tol)
+    # The expression for the angle when changing coordinate system from Raster
+    # to Cartesian coordinates is atan(-g₁, g₂). The offset is used to indicate
+    # against which compass direction we will measure angles.
+    is_angle_undefined = (abs(g₁) < tol && abs(g₂) < tol)
+    return  is_angle_undefined ? 2π : clockwise(atan(-g₁, g₂) + offset)
 end
 
 function zero_to_2PI(θ)
