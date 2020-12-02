@@ -125,4 +125,23 @@
         out = detect_gradient_orientation(g₁, g₂)
         @test all(out .== deg2rad.([90.0,  135.0,  180.0,  225.0,  270.0,  315.0,  0.0,  45.0]))
     end
+
+    @testset "Undefined Angles" begin
+        # When the gradient magnitude is close to zero the gradient orientation
+        # is undefined and we return a "sentinel" value of 360 degrees or
+        # 2π.
+        out₁ = detect_gradient_orientation([0.0], [0.0], OrientationConvention(in_radians = false))
+        out₂ = detect_gradient_orientation([0.0], [0.0], OrientationConvention(in_radians = true))
+        @test out₁ == [360]
+        @test out₂ == [2π]
+
+        detect_gradient_orientation!(out₂, [0.0], [0.0])
+        @test out₂ == [2π]
+    end
+
+    @testset "Warning" begin
+        convention = OrientationConvention(compass_direction = 'X')
+        @test_logs (:warn, "Unrecognised compass_direction... using a default direction of south (S).")  detect_gradient_orientation([0.0], [0.0], convention)
+    end
+
 end
