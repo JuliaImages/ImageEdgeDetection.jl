@@ -1,7 +1,7 @@
 name = "ImageEdgeDetection"
 uuid = "2b14c160-480b-11ea-1b58-656063328ff7"
 authors = ["Dr. Zygmunt L. Szpak"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"

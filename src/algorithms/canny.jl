@@ -79,7 +79,7 @@ function (f::Canny)(out::GenericGrayImage, img::GenericGrayImage)
 
     # Smooth the image with a Gaussian filter of width σ, which specifies the
     # scale level of the edge detector.
-    kernel = KernelFactors.IIRGaussian((σ,σ))
+    kernel =  KernelFactors.gaussian((σ,σ))
     imgf = imfilter(img, kernel, NA())
 
     # Calculate the gradient vector at each position of the filtered image.
@@ -89,8 +89,14 @@ function (f::Canny)(out::GenericGrayImage, img::GenericGrayImage)
     # Gradient magnitude
     mag = hypot.(g₁, g₂)
 
-    low_threshold =  typeof(low) <: Percentile ? StatsBase.percentile(vec(mag), low.p) : low
-    high_threshold =  typeof(high) <: Percentile ? StatsBase.percentile(vec(mag), high.p) : high
+    # In StatsBase quantiles are undefined in the presence of NaNs
+    # hence we need to keep only valid magnitudes before we can determine
+    # the percentiles.
+    valid_indices = map(x-> !isnan(x), mag)
+    valid_mag = view(mag, valid_indices)
+
+    low_threshold =  typeof(low) <: Percentile ? StatsBase.percentile(vec(valid_mag), low.p) : low
+    high_threshold =  typeof(high) <: Percentile ? StatsBase.percentile(vec(valid_mag), high.p) : high
 
     thinning_algorithm = @set thinning_algorithm.threshold = low_threshold
 
@@ -122,7 +128,7 @@ function (f::Canny)(out₁::GenericGrayImage, out₂::AbstractArray{<:StaticVect
 
     # Smooth the image with a Gaussian filter of width σ, which specifies the
     # scale level of the edge detector.
-    kernel = KernelFactors.IIRGaussian((σ,σ))
+    kernel = KernelFactors.gaussian((σ,σ))
     imgf = imfilter(img, kernel, NA())
 
     # Calculate the gradient vector at each position of the filtered image.
@@ -132,8 +138,14 @@ function (f::Canny)(out₁::GenericGrayImage, out₂::AbstractArray{<:StaticVect
     # Gradient magnitude
     mag = hypot.(g₁, g₂)
 
-    low_threshold =  typeof(low) <: Percentile ? StatsBase.percentile(vec(mag), low.p) : low
-    high_threshold =  typeof(high) <: Percentile ? StatsBase.percentile(vec(mag), high.p) : high
+    # In StatsBase quantiles are undefined in the presence of NaNs
+    # hence we need to keep only valid magnitudes before we can determine
+    # the percentiles.
+    valid_indices = map(x-> !isnan(x), mag)
+    valid_mag = view(mag, valid_indices)
+
+    low_threshold =  typeof(low) <: Percentile ? StatsBase.percentile(vec(valid_mag), low.p) : low
+    high_threshold =  typeof(high) <: Percentile ? StatsBase.percentile(vec(valid_mag), high.p) : high
 
     thinning_algorithm = @set thinning_algorithm.threshold = low_threshold
 
