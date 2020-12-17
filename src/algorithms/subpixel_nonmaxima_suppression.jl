@@ -89,7 +89,7 @@ function suppress_subpixel_non_maxima!(out₁::AbstractArray, out₂::AbstractAr
         d₁ = g₁[i]
         d₂ = g₂[i]
         mc = mag[i]
-        if mc < threshold || mc == 0
+        if mc < threshold || mc == 0 || isnan(mc)
             out₁[r,c] = zero(eltype(mag))
         else
             # Ensure the vector 𝐝 = [d₁, d₂] has unit norm.

@@ -78,7 +78,7 @@
 
     @testset "Offset Arrays" begin
         img_gray = Gray{N0f8}.(load("algorithms/References/circle.png"))
-        img_gray_offset = OffsetArray(img_gray, -24:25, -24:25)
+        img_gray_offset = OffsetArray(img_gray, -25:25, -25:25)
 
         f = Canny()
         edges_img_1 = detect_edges(img_gray_offset, f)
@@ -94,35 +94,41 @@
     end
 
 
-
     @testset "Keywords" begin
         img_gray = Gray{N0f8}.(load("algorithms/References/circle.png"))
         img = copy(img_gray)
-        low = [0.000009765625, Percentile(20)]
-        high = [0.01953125, Percentile(80)]
-        spatial_scale = [1.0, 1.4]
+        low = [0.053374808162753785, Percentile(80)]
+        high = [0.16280777841581243, Percentile(90)]
+        spatial_scale = [1.4, 1.4]
         # Detect edges
         for i = 1:2
             f = Canny(spatial_scale = spatial_scale[i], low = low[i], high = high[i])
             @test_reference "References/circle_edge.png" Gray.(detect_edges(img, f)) by=edge_detection_equality()
-            @test_reference "References/circle_edge.png" Gray.(detect_edges(img * 0.1, f)) by=edge_detection_equality() # Working with small magnitudes
+            if i == 2
+                @test_reference "References/circle_edge.png" Gray.(detect_edges(img * 0.5, f)) by=edge_detection_equality()
+            end
         end
 
         # Detect subpixel edges
         for i = 1:2
             g = Canny(spatial_scale = spatial_scale[i], low = low[i], high = high[i], thinning_algorithm = SubpixelNonmaximaSuppression())
             out1, offsets1 = detect_subpixel_edges(img, g)
-            out2, offsets2 = detect_subpixel_edges(img, g)
+            out2, offsets2 = detect_subpixel_edges(img * 0.5, g)
             @test_reference "References/circle_edge.png" Gray.(out1) by=edge_detection_equality()
-            @test_reference "References/circle_edge.png" Gray.(out2) by=edge_detection_equality() # Working with small magnitudes
+            if i == 2
+                @test_reference "References/circle_edge.png" Gray.(out2) by=edge_detection_equality()
+            end
         end
     end
 
     @testset "Types" begin
         # Gray
         img_gray = Gray{N0f8}.(load("algorithms/References/circle.png"))
-        f = Canny()
-        g = Canny(thinning_algorithm = SubpixelNonmaximaSuppression())
+        f = Canny(low = Percentile(80), high = Percentile(90),
+                  spatial_scale = 1.4)
+        g = Canny(low = Percentile(80), high = Percentile(90),
+                  spatial_scale = 1.4,
+                  thinning_algorithm = SubpixelNonmaximaSuppression())
 
         type_list = generate_test_types([Float32, N0f8], [Gray])
         for T in type_list
@@ -135,8 +141,11 @@
 
         # Color3
         img_color = RGB{Float64}.(load("algorithms/References/circle.png"))
-        f = Canny()
-        g = Canny(thinning_algorithm = SubpixelNonmaximaSuppression())
+        f = Canny(low = Percentile(80), high = Percentile(90),
+                  spatial_scale = 1.4)
+        g = Canny(low = Percentile(80), high = Percentile(90),
+                  spatial_scale = 1.4,
+                  thinning_algorithm = SubpixelNonmaximaSuppression())
 
         type_list = generate_test_types([Float32, N0f8], [RGB, Lab])
         for T in type_list
@@ -149,10 +158,10 @@
     end
 
     @testset "Default Values" begin
-        img = Gray{N0f8}.(load("algorithms/References/circle.png"))
+        img = Gray{N0f8}.(testimage("cameraman"))
         out, offsets = detect_subpixel_edges(img)
-        @test_reference "References/circle_edge.png" Gray.(detect_edges(img)) by=edge_detection_equality()
-        @test_reference "References/circle_edge.png" Gray.(out) by=edge_detection_equality()
+        @test_reference "References/cameraman_edge.png" Gray.(detect_edges(img)) by=edge_detection_equality()
+        @test_reference "References/cameraman_edge.png" Gray.(out) by=edge_detection_equality()
     end
 
     @testset "Numerical" begin
@@ -166,11 +175,13 @@
 
     @testset "Subpixel Accuracy on Circle Image" begin
         # Equation of circle (x-a)^2 + (y - b)^2 = r^2 and corresponding image.
-        a = 25
-        b = 25
-        r = 20
+        a = 26
+        b = 26
+        r = 15
         img = Gray{N0f8}.(load("algorithms/References/circle.png"))
-        algo = Canny(spatial_scale = 1.4, thinning_algorithm = SubpixelNonmaximaSuppression())
+        algo = Canny(spatial_scale = 1.4,
+                     thinning_algorithm = SubpixelNonmaximaSuppression(),
+                     low = Percentile(75), high = Percentile(80))
         nms, offsets = detect_subpixel_edges(img, algo)
 
         # Verify that the subpixel coordinates more accurately satisfy the
@@ -197,7 +208,7 @@
         end
         # The subpixel coordinates yield a better fit.
         @test total₂ <  total₁
-        @test total₂ / N < 6.72
+        @test total₂ / N < 5.54
     end
 
     @testset "Subpixel Accuracy on Synthetic Image" begin
@@ -267,4 +278,23 @@
         end
     end
 
+    @testset "NaNs" begin
+        img = Gray.(ones(15, 15)) .* NaN
+        img[4:12, 4:12] .= 0
+        img[6:10, 6:10] .= 1
+        img[7:9, 7:9] .= NaN
+
+        f = Canny(spatial_scale = 1,
+                  high = ImageEdgeDetection.Percentile(80),
+                  low = ImageEdgeDetection.Percentile(20))
+        out = detect_edges(img, f)
+        @test_reference "References/edges_from_image_with_nan.png" Gray.(out) by=edge_detection_equality()
+
+        f = Canny(spatial_scale = 1,
+                  high = ImageEdgeDetection.Percentile(80),
+                  low = ImageEdgeDetection.Percentile(20),
+                   thinning_algorithm = SubpixelNonmaximaSuppression())
+        out, offsets  = detect_subpixel_edges(img, f)
+        @test_reference "References/edges_from_image_with_nan.png" Gray.(out) by=edge_detection_equality()
+    end
 end
