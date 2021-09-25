@@ -7,8 +7,6 @@ on:
     branches:
       - master
   pull_request:
-  schedule:
-    - cron: '20 00 1 * *'
 
 jobs:
   test:
@@ -30,7 +28,7 @@ jobs:
         env:
           cache-name: cache-artifacts
         with:
-          path: ~/.julia/artifacts 
+          path: ~/.julia/artifacts
           key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
           restore-keys: |
             ${{ runner.os }}-test-${{ env.cache-name }}-
