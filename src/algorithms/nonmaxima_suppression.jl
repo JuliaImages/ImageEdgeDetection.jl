@@ -77,8 +77,8 @@ function suppress_non_maxima!(out::AbstractArray, mag::AbstractArray, g₁::Abst
     m₂ = zero(eltype(mag))
     @inbounds for i in CartesianIndices(mag)
         r, c = i.I
-        d₁ = g₁[i]
-        d₂ = g₂[i]
+        d₁ = gray(g₁[i])
+        d₂ = gray(g₂[i])
         mc = mag[i]
         if mc < threshold || mc == 0 || isnan(mc)
             out[r,c] = zero(eltype(mag))
