@@ -10,14 +10,27 @@ on:
 
 jobs:
   test:
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         julia-version: ['1.0', '1', 'nightly']
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-latest]
+        arch: [x64]
+        include:
+          - os: windows-latest
+            julia-version: '1'
+            arch: x64
+          - os: macOS-latest
+            julia-version: '1'
+            arch: x64
+          - os: ubuntu-latest
+            julia-version: '1'
+            arch: x86
 
     steps:
-      - uses: actions/checkout@v1.0.0
+      - uses: actions/checkout@v2
       - name: "Set up Julia"
         uses: julia-actions/setup-julia@v1
         with:
@@ -37,8 +50,7 @@ jobs:
 
       - name: "Unit Test"
         uses: julia-actions/julia-runtest@master
-
-      - name: "Upload code coverage report"
-        uses: julia-actions/julia-uploadcodecov@latest
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: julia-actions/julia-processcoverage@v1
+      - uses: codecov/codecov-action@v1
+        with:
+          file: lcov.info
