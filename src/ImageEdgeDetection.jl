@@ -1,6 +1,5 @@
 module ImageEdgeDetection
 
-using ColorVectorSpace
 using DataStructures
 using ImageCore
 using ImageCore.MappedArrays

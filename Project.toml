@@ -4,7 +4,6 @@ authors = ["Dr. Zygmunt L. Szpak"]
 version = "0.1.4"
 
 [deps]
-ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 ImageFiltering = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
@@ -16,13 +15,12 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
 
 [compat]
-ColorVectorSpace = "0.6, 0.7, 0.8, 0.9"
 DataStructures = "0.17, 0.18"
-ImageCore = "0.8"
-ImageFiltering = "0.6"
+ImageCore = "0.9"
+ImageFiltering = "0.7"
 Interpolations = "0.10, 0.11, 0.12, 0.13"
 Parameters = "0.12"
-Setfield = "0.6, 0.7"
+Setfield = "0.6, 0.7, 0.8"
 StaticArrays = "0.10, 0.11, 0.12, 1.0"
 StatsBase = "0.32, 0.33"
 UnPack = "1.0"
