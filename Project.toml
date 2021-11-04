@@ -1,7 +1,7 @@
 name = "ImageEdgeDetection"
 uuid = "2b14c160-480b-11ea-1b58-656063328ff7"
 authors = ["Dr. Zygmunt L. Szpak"]
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
