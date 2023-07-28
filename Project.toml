@@ -22,7 +22,7 @@ Interpolations = "0.10, 0.11, 0.12, 0.13, 0.14"
 Parameters = "0.12"
 Setfield = "1.0, 1.1"
 StaticArrays = "0.10, 0.11, 0.12, 1.0"
-StatsBase = "0.32, 0.33"
+StatsBase = "0.32, 0.33, 0.34"
 UnPack = "1.0"
 julia = "1"
 
