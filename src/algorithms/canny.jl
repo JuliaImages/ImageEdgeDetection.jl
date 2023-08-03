@@ -108,7 +108,7 @@ function (f::Canny)(out::GenericGrayImage, img::GenericGrayImage)
     # “hysteresis thresholding”. Edge pixels whose gradient magnitude is below
     # the low threshold are removed; edge pixels whose gradient magnitudes are
     # above (or equal to) the high threshold are retained, and edge pixels whose
-    # gradient magnituded are between the low and high threshold are only
+    # gradient magnitude are between the low and high threshold are only
     # retained if they are connected to edge pixels whose gradient magnitudes
     # are above or equal to the high threshold.
     edges = zeros(Bool, axes(img))
@@ -157,7 +157,7 @@ function (f::Canny)(out₁::GenericGrayImage, out₂::AbstractArray{<:StaticVect
     # “hysteresis thresholding”. Edge pixels whose gradient magnitude is below
     # the low threshold are removed; edge pixels whose gradient magnitudes are
     # above (or equal to) the high threshold are retained, and edge pixels whose
-    # gradient magnituded are between the low and high threshold are only
+    # gradient magnitude are between the low and high threshold are only
     # retained if they are connected to edge pixels whose gradient magnitudes
     # are above or equal to the high threshold.
     edges = zeros(Bool, axes(img))
