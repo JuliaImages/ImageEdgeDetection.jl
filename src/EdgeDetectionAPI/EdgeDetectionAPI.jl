@@ -26,6 +26,6 @@ include("edge_detection.jl")
 include("edge_thinning.jl")
 
 # we do not export any symbols since we don't require
-# package developers to implemente all the APIs
+# package developers to implement all the APIs
 
 end  # module EdgeDetectionAPI
