@@ -1,7 +1,7 @@
 name = "ImageEdgeDetection"
 uuid = "2b14c160-480b-11ea-1b58-656063328ff7"
 authors = ["Dr. Zygmunt L. Szpak"]
-version = "0.1.8"
+version = "0.1.9"
 
 [deps]
 DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
@@ -15,8 +15,8 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 UnPack = "3a884ed6-31ef-47d7-9d2a-63182c4928ed"
 
 [compat]
-DataStructures = "0.17, 0.18"
-ImageCore = "0.9"
+DataStructures = "0.17, 0.18, 0.19"
+ImageCore = "0.9, 0.10"
 ImageFiltering = "0.7"
 Interpolations = "0.10, 0.11, 0.12, 0.13, 0.14"
 Parameters = "0.12"
@@ -24,7 +24,7 @@ Setfield = "1.0, 1.1"
 StaticArrays = "0.10, 0.11, 0.12, 1.0"
 StatsBase = "0.32, 0.33, 0.34"
 UnPack = "1.0"
-julia = "1"
+julia = "1.6"
 
 [extras]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
